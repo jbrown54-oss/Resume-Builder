@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Resume Builder</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="app">
+
+    <!-- ── Toolbar ─────────────────────────────────────────────────────── -->
+    <div id="toolbar">
+      <span id="app-title">Resume Builder</span>
+      <span id="file-indicator"></span>
+      <div id="toolbar-actions">
+        <button id="btn-open" title="Open (Ctrl+O)">Open</button>
+        <button id="btn-save" title="Save (Ctrl+S)">Save</button>
+        <button id="btn-pdf" title="Export PDF (Ctrl+E)">Export PDF</button>
+      </div>
+    </div>
+
+    <!-- ── Split pane ──────────────────────────────────────────────────── -->
+    <div id="split">
+
+      <!-- LEFT: Editor -->
+      <div id="editor-panel">
+        <div id="sections">
+
+          <!-- Personal Info -->
+          <div class="section-card">
+            <div class="card-header" data-target="personal-body">
+              <span class="card-title">Personal Info</span>
+              <span class="card-arrow">▾</span>
+            </div>
+            <div class="card-body" id="personal-body">
+              <label>Full Name
+                <input type="text" id="f-name" placeholder="JONAS BROWN">
+              </label>
+              <label>Tagline
+                <input type="text" id="f-tagline" placeholder="Title · University">
+              </label>
+              <label>Phone
+                <input type="text" id="f-phone" placeholder="000-000-0000">
+              </label>
+              <label>Email
+                <input type="text" id="f-email" placeholder="email@example.com">
+              </label>
+              <label>Location
+                <input type="text" id="f-location" placeholder="City, ST">
+              </label>
+              <label>LinkedIn
+                <input type="text" id="f-linkedin" placeholder="linkedin.com/in/...">
+              </label>
+            </div>
+          </div>
+
+          <!-- Objective -->
+          <div class="section-card">
+            <div class="card-header" data-target="objective-body">
+              <span class="card-title">Objective</span>
+              <span class="card-arrow">▾</span>
+            </div>
+            <div class="card-body" id="objective-body">
+              <label>Statement
+                <textarea id="f-objective" rows="5" placeholder="Your objective statement..."></textarea>
+              </label>
+            </div>
+          </div>
+
+          <!-- Core Competencies -->
+          <div class="section-card">
+            <div class="card-header" data-target="competencies-body">
+              <span class="card-title">Core Competencies</span>
+              <span class="card-arrow">▾</span>
+            </div>
+            <div class="card-body" id="competencies-body">
+              <div id="comp-tags" class="tag-list"></div>
+              <div class="tag-input-row">
+                <input type="text" id="comp-input" placeholder="Add competency, press Enter">
+                <button id="comp-add">+</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Technical Skills -->
+          <div class="section-card">
+            <div class="card-header" data-target="skills-body">
+              <span class="card-title">Technical Skills</span>
+              <span class="card-arrow">▾</span>
+            </div>
+            <div class="card-body" id="skills-body">
+              <label>Programming
+                <input type="text" id="f-skills-prog" placeholder="Python, R, MATLAB...">
+              </label>
+              <label>Software
+                <input type="text" id="f-skills-soft" placeholder="VS Code, SolidWorks...">
+              </label>
+              <label>Certifications
+                <input type="text" id="f-skills-cert" placeholder="CPR/AED, etc.">
+              </label>
+            </div>
+          </div>
+
+          <!-- Education -->
+          <div class="section-card">
+            <div class="card-header" data-target="education-body">
+              <span class="card-title">Education</span>
+              <span class="card-arrow">▾</span>
+            </div>
+            <div class="card-body" id="education-body">
+              <label>School
+                <input type="text" id="f-edu-school" placeholder="University — City, ST">
+              </label>
+              <label>Degree
+                <input type="text" id="f-edu-degree" placeholder="Bachelor of Science, Major">
+              </label>
+              <label>Minor
+                <input type="text" id="f-edu-minor" placeholder="Minor in ...">
+              </label>
+              <label>Date
+                <input type="text" id="f-edu-date" placeholder="Expected May 2027">
+              </label>
+              <label>Activities
+                <input type="text" id="f-edu-activities" placeholder="Club, activities...">
+              </label>
+            </div>
+          </div>
+
+          <!-- Experience -->
+          <div class="section-card">
+            <div class="card-header" data-target="experience-body">
+              <span class="card-title">Experience</span>
+              <span class="card-arrow">▾</span>
+            </div>
+            <div class="card-body" id="experience-body">
+              <div id="exp-entries"></div>
+              <button id="btn-add-exp" class="add-btn">+ Add Position</button>
+            </div>
+          </div>
+
+          <!-- Additional -->
+          <div class="section-card">
+            <div class="card-header" data-target="additional-body">
+              <span class="card-title">Additional</span>
+              <span class="card-arrow">▾</span>
+            </div>
+            <div class="card-body" id="additional-body">
+              <div id="addl-tags" class="tag-list vertical"></div>
+              <div class="tag-input-row">
+                <input type="text" id="addl-input" placeholder="Add item, press Enter">
+                <button id="addl-add">+</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Formatting -->
+          <div class="section-card">
+            <div class="card-header" data-target="formatting-body">
+              <span class="card-title">Formatting</span>
+              <span class="card-arrow">▾</span>
+            </div>
+            <div class="card-body" id="formatting-body">
+              <label>Accent Color
+                <input type="color" id="f-color" value="#006e7a">
+              </label>
+              <label>Font Size (pt)
+                <input type="number" id="f-fontsize" min="8" max="14" step="0.5" value="10.5">
+              </label>
+              <label>Margin (in)
+                <input type="number" id="f-margin" min="0.5" max="1.5" step="0.05" value="0.75">
+              </label>
+            </div>
+          </div>
+
+        </div><!-- /sections -->
+      </div><!-- /editor-panel -->
+
+      <!-- RIGHT: Preview -->
+      <div id="preview-panel">
+        <iframe id="preview"></iframe>
+      </div>
+
+    </div><!-- /split -->
+  </div><!-- /app -->
+
+  <div id="toast"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>

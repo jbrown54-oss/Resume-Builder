@@ -1,0 +1,446 @@
+/* ── Reset & root vars ──────────────────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --accent:        #006e7a;
+  --accent-hover:  #005f6a;
+  --bg:            #f0f2f5;
+  --panel-bg:      #ffffff;
+  --border:        #d0d5dd;
+  --text:          #1a1a1a;
+  --text-muted:    #6b7280;
+  --card-head-bg:  #f8f9fa;
+  --input-bg:      #ffffff;
+  --toolbar-h:     44px;
+  --editor-w:      360px;
+}
+
+html, body {
+  height: 100%;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  font-size: 13px;
+  color: var(--text);
+  background: var(--bg);
+  overflow: hidden;
+}
+
+/* ── App shell ──────────────────────────────────────────────────────────── */
+#app {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+/* ── Toolbar ────────────────────────────────────────────────────────────── */
+#toolbar {
+  height: var(--toolbar-h);
+  flex-shrink: 0;
+  background: #1f2937;
+  color: #f9fafb;
+  display: flex;
+  align-items: center;
+  padding: 0 14px;
+  gap: 10px;
+  -webkit-app-region: drag;
+  user-select: none;
+}
+
+#app-title {
+  font-weight: 600;
+  font-size: 13px;
+  letter-spacing: 0.3px;
+  color: #e5e7eb;
+  -webkit-app-region: no-drag;
+}
+
+#file-indicator {
+  flex: 1;
+  font-size: 11px;
+  color: #9ca3af;
+  -webkit-app-region: no-drag;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+#toolbar-actions {
+  display: flex;
+  gap: 6px;
+  -webkit-app-region: no-drag;
+}
+
+#toolbar-actions button {
+  padding: 4px 12px;
+  border-radius: 5px;
+  border: 1px solid #374151;
+  background: #374151;
+  color: #f9fafb;
+  font-size: 12px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+#toolbar-actions button:hover {
+  background: #4b5563;
+  border-color: #4b5563;
+}
+
+/* ── Split pane ─────────────────────────────────────────────────────────── */
+#split {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+/* ── Editor panel ───────────────────────────────────────────────────────── */
+#editor-panel {
+  width: var(--editor-w);
+  flex-shrink: 0;
+  background: var(--bg);
+  overflow-y: auto;
+  border-right: 1px solid var(--border);
+  padding: 10px 8px 20px;
+}
+
+/* ── Section cards ──────────────────────────────────────────────────────── */
+.section-card {
+  background: var(--panel-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  margin-bottom: 8px;
+  overflow: hidden;
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  background: var(--card-head-bg);
+  cursor: pointer;
+  user-select: none;
+  border-bottom: 1px solid transparent;
+  transition: background 0.15s;
+}
+
+.card-header:hover {
+  background: #eef0f2;
+}
+
+.card-header.open {
+  border-bottom-color: var(--border);
+}
+
+.card-title {
+  font-weight: 600;
+  font-size: 11px;
+  color: #374151;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+}
+
+.card-arrow {
+  font-size: 11px;
+  color: var(--text-muted);
+  transition: transform 0.2s;
+  line-height: 1;
+}
+
+.card-arrow.rotated {
+  transform: rotate(-90deg);
+}
+
+.card-body {
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.card-body.hidden {
+  display: none;
+}
+
+/* ── Form controls ──────────────────────────────────────────────────────── */
+label {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+input[type="text"],
+input[type="number"],
+textarea {
+  padding: 5px 8px;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  font-size: 12px;
+  font-family: inherit;
+  background: var(--input-bg);
+  color: var(--text);
+  width: 100%;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+input[type="text"]:focus,
+input[type="number"]:focus,
+textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(0, 110, 122, 0.15);
+}
+
+textarea {
+  resize: vertical;
+  min-height: 80px;
+  line-height: 1.5;
+}
+
+input[type="color"] {
+  width: 48px;
+  height: 30px;
+  padding: 2px;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  cursor: pointer;
+  background: var(--input-bg);
+}
+
+/* ── Tag lists ──────────────────────────────────────────────────────────── */
+.tag-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  min-height: 20px;
+}
+
+.tag-list.vertical {
+  flex-direction: column;
+  flex-wrap: nowrap;
+}
+
+.tag {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px;
+  background: rgba(0, 110, 122, 0.08);
+  border: 1px solid rgba(0, 110, 122, 0.25);
+  border-radius: 99px;
+  font-size: 11px;
+  color: #005060;
+  max-width: 100%;
+}
+
+.tag-list.vertical .tag {
+  border-radius: 5px;
+  padding: 4px 8px;
+}
+
+.tag-text {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tag-list.vertical .tag-text {
+  white-space: normal;
+}
+
+.tag-remove {
+  background: none;
+  border: none;
+  color: #9ca3af;
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 1;
+  padding: 0 1px;
+  flex-shrink: 0;
+  transition: color 0.15s;
+}
+
+.tag-remove:hover {
+  color: #c0392b;
+}
+
+.tag-input-row {
+  display: flex;
+  gap: 5px;
+  margin-top: 2px;
+}
+
+.tag-input-row input {
+  flex: 1;
+}
+
+.tag-input-row button {
+  padding: 5px 10px;
+  border: 1px solid var(--accent);
+  border-radius: 5px;
+  background: var(--accent);
+  color: white;
+  cursor: pointer;
+  font-size: 16px;
+  line-height: 1;
+  transition: background 0.15s;
+}
+
+.tag-input-row button:hover {
+  background: var(--accent-hover);
+}
+
+/* ── Experience entry cards ─────────────────────────────────────────────── */
+.exp-entry-card {
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 8px 10px;
+  margin-bottom: 8px;
+  background: #fafafa;
+}
+
+.exp-entry-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 7px;
+}
+
+.exp-entry-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: #374151;
+}
+
+.exp-remove-btn {
+  background: none;
+  border: none;
+  color: #9ca3af;
+  cursor: pointer;
+  font-size: 16px;
+  line-height: 1;
+  padding: 0 2px;
+  transition: color 0.15s;
+}
+
+.exp-remove-btn:hover {
+  color: #c0392b;
+}
+
+.exp-entry-card label {
+  margin-bottom: 4px;
+}
+
+.bullets-list {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-bottom: 5px;
+}
+
+.bullet-row {
+  display: flex;
+  gap: 5px;
+  align-items: flex-start;
+}
+
+.bullet-row textarea {
+  flex: 1;
+  min-height: 48px;
+  resize: vertical;
+}
+
+.bullet-remove {
+  background: none;
+  border: none;
+  color: #9ca3af;
+  cursor: pointer;
+  font-size: 16px;
+  padding: 4px 2px;
+  flex-shrink: 0;
+  transition: color 0.15s;
+}
+
+.bullet-remove:hover {
+  color: #c0392b;
+}
+
+.add-bullet-btn,
+.add-btn {
+  background: none;
+  border: 1px dashed var(--border);
+  border-radius: 5px;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 11px;
+  padding: 4px 8px;
+  width: 100%;
+  text-align: center;
+  transition: border-color 0.15s, color 0.15s;
+}
+
+.add-bullet-btn:hover,
+.add-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+#btn-add-exp {
+  margin-top: 2px;
+}
+
+/* ── Preview panel ──────────────────────────────────────────────────────── */
+#preview-panel {
+  flex: 1;
+  background: #d1d5db;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  overflow: auto;
+  padding: 20px;
+}
+
+#preview {
+  width: 8.5in;
+  height: 11in;
+  flex-shrink: 0;
+  border: none;
+  box-shadow: 0 4px 28px rgba(0, 0, 0, 0.22);
+  background: white;
+  display: block;
+}
+
+/* ── Toast notification ─────────────────────────────────────────────────── */
+#toast {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  padding: 10px 18px;
+  background: #1f2937;
+  color: #f9fafb;
+  border-radius: 8px;
+  font-size: 13px;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.25s, transform 0.25s;
+  pointer-events: none;
+  z-index: 9999;
+  max-width: 300px;
+}
+
+#toast.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+#toast.error {
+  background: #7f1d1d;
+}
