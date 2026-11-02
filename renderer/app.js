@@ -517,12 +517,21 @@ async function saveFile(saveAs = false) {
     state.dirty = false;
     updateTitle();
     showToast('Saved: ' + result.filePath.split(/[\\/]/).pop());
-  } else if (result.error) {
-    showToast('Save failed: ' + result.error, true);
+    return true;
   }
+  if (result.error) showToast('Save failed: ' + result.error, true);
+  return false;
+}
+
+async function confirmDiscard(action) {
+  if (!state.dirty) return true;
+  const choice = await window.resumeAPI.askToSave(action);
+  if (choice === 'save') return saveFile(false);
+  return choice === 'discard';
 }
 
 async function openFile() {
+  if (!(await confirmDiscard('opening another file'))) return;
   const result = await window.resumeAPI.openFile();
   if (result.success) {
     state.data     = result.data;
@@ -547,7 +556,8 @@ async function exportPDF() {
   }
 }
 
-function newFile() {
+async function newFile() {
+  if (!(await confirmDiscard('starting a new one'))) return;
   state.data = {
     name: '', tagline: '', phone: '', email: '', location: '', linkedin: '',
     objective: '',
@@ -579,6 +589,17 @@ window.resumeAPI.onMenuAction(action => {
     case 'save-as':    saveFile(true);   break;
     case 'export-pdf': exportPDF();      break;
   }
+});
+
+// ── Unsaved-changes guard (close, quit, reload) ───────────────────────────────
+window.addEventListener('beforeunload', e => {
+  if (!state.dirty) return;
+  e.preventDefault();
+  e.returnValue = false;
+});
+
+window.resumeAPI.onSaveAndExit(async exit => {
+  if (await saveFile(false)) window.resumeAPI.finishExit(exit);
 });
 
 // ── Init ──────────────────────────────────────────────────────────────────────

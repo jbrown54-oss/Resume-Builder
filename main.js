@@ -4,6 +4,19 @@ const fs = require('fs');
 const os = require('os');
 
 let mainWindow;
+let pendingExit = null;
+
+function askToSave(action) {
+  const choice = dialog.showMessageBoxSync(mainWindow, {
+    type: 'warning',
+    buttons: ['Save', "Don't Save", 'Cancel'],
+    defaultId: 0,
+    cancelId: 2,
+    message: `Save changes to your resume before ${action}?`,
+    detail: "Your changes will be lost if you don't save them."
+  });
+  return ['save', 'discard', 'cancel'][choice];
+}
 
 function createWindow() {
   mainWindow = new BrowserWindow({
@@ -19,8 +32,23 @@ function createWindow() {
 
   mainWindow.loadFile(path.join(__dirname, 'renderer', 'index.html'));
 
+  // 'close' fires before the renderer's beforeunload; a reload never fires it.
+  mainWindow.on('close', () => {
+    if (!pendingExit) pendingExit = 'close';
+  });
+
+  // The renderer blocks unload while it has unsaved changes.
+  mainWindow.webContents.on('will-prevent-unload', event => {
+    const exit = pendingExit || 'reload';
+    pendingExit = null;
+    const choice = askToSave({ close: 'closing', quit: 'quitting', reload: 'reloading' }[exit]);
+    if (choice === 'discard') event.preventDefault();
+    else if (choice === 'save') mainWindow.webContents.send('save-and-exit', exit);
+  });
+
   mainWindow.on('closed', () => {
     mainWindow = null;
+    pendingExit = null;
   });
 }
 
@@ -176,7 +204,21 @@ ipcMain.handle('set-title', (event, title) => {
   if (mainWindow) mainWindow.setTitle(title);
 });
 
+// ── IPC: unsaved-changes prompts ────────────────────────────────────────────
+ipcMain.handle('ask-to-save', (event, action) => askToSave(action));
+
+ipcMain.handle('finish-exit', (event, exit) => {
+  if (exit === 'quit') return app.quit();
+  if (!mainWindow) return;
+  if (exit === 'close') mainWindow.close();
+  else mainWindow.webContents.reload();
+});
+
 // ── App lifecycle ───────────────────────────────────────────────────────────
+app.on('before-quit', () => {
+  pendingExit = 'quit';
+});
+
 app.whenReady().then(() => {
   createWindow();
   buildMenu();
